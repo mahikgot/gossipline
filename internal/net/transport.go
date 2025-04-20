@@ -23,3 +23,12 @@ func (t *Transmitter) Send(m *message.Message) error {
 
 	return err
 }
+
+func (t *Transmitter) Recieve(ch chan []byte) error {
+	data := make([]byte, 512)
+	if _, err := t.conn.Read(data); err != nil {
+		return err
+	}
+	ch <- data
+	return nil
+}
