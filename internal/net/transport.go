@@ -10,7 +10,7 @@ import (
 var ErrWriteFail = errors.New("failed to send mesage")
 
 type Transmitter struct {
-	conn writerTo
+	conn net.Conn
 	dst  net.Addr
 }
 
@@ -19,19 +19,7 @@ func (t *Transmitter) Send(m *message.Message) error {
 	if err != nil {
 		return err
 	}
-	_, err = t.conn.WriteTo(data, t.dst)
+	_, err = t.conn.Write(data)
 
 	return err
-}
-
-type Sender interface {
-	Send(m *message.Message) error
-}
-
-type Reciever interface {
-	Recieve(data []byte) error
-}
-
-type writerTo interface {
-	WriteTo([]byte, net.Addr) (int, error)
 }
