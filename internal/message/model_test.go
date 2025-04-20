@@ -43,16 +43,14 @@ func TestFromJSON(t *testing.T) {
 		{
 			"missing fields",
 			`{"from":"ghost"}`,
-			&Message{
-				From: "ghost",
-			},
 			nil,
+			ErrMissingField,
 		},
 		{
 			"empty JSON",
 			`{}`,
-			&Message{},
 			nil,
+			ErrMissingField,
 		},
 	}
 	for _, tt := range tests {
