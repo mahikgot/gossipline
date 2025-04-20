@@ -56,14 +56,14 @@ func TestFromJSON(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(fmt.Sprintf("%s [%s]", tt.explanation, tt.input), func(t *testing.T) {
-			handle, err := FromJSONString(tt.input)
+			message, err := FromJSONString(tt.input)
 
 			if got, want := err, tt.errExpected; !errors.Is(got, want) {
 				t.Fatalf("err=%T (%v), want=%T (%v)", got, got, want, want)
 			}
 
-			if got, want := handle, tt.messageExpected; !got.Equal(want) {
-				t.Errorf("handle=%v, want=%v", got, want)
+			if got, want := message, tt.messageExpected; !got.Equal(want) {
+				t.Errorf("message=%v, want=%v", got, want)
 			}
 		})
 	}
@@ -146,7 +146,7 @@ func TestToBytes(t *testing.T) {
 			}
 
 			if got, want := data, tt.dataExpected; !bytes.Equal(got, want) {
-				t.Errorf("handle=%v, want=%v", string(got), string(want))
+				t.Errorf("data=%v, want=%v", string(got), string(want))
 			}
 		})
 	}
