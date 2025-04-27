@@ -11,7 +11,6 @@ var ErrWriteFail = errors.New("failed to send mesage")
 
 type Transmitter struct {
 	conn net.Conn
-	dst  net.Addr
 }
 
 func (t *Transmitter) Send(m *message.Message) error {
@@ -25,10 +24,25 @@ func (t *Transmitter) Send(m *message.Message) error {
 }
 
 func (t *Transmitter) Recieve(ch chan []byte) error {
-	data := make([]byte, 512)
-	if _, err := t.conn.Read(data); err != nil {
-		return err
+	for {
+		data := make([]byte, 512)
+		n, err := t.conn.Read(data)
+		if err != nil {
+			return err
+		}
+		ch <- data[:n]
 	}
-	ch <- data
-	return nil
+}
+
+func RecieveMessages(ch chan []byte) {
+	addr, err := net.ResolveUDPAddr("udp", ":9999")
+	if err != nil {
+		panic(err)
+	}
+	conn, err := net.ListenUDP("udp", addr)
+	if err != nil {
+		panic(err)
+	}
+	transmitter := Transmitter{conn}
+	go transmitter.Recieve(ch)
 }
